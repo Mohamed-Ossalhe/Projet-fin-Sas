@@ -21,15 +21,11 @@ typedef struct
 
 // increment everytime a product is added
 int n = 0;
+// increment everytime a product is sold
+int achate = 0;
 
 // check if found and store the product index in pos var
 int found = 0, pos;
-
-// products sold total price
-float total_products_price = 0;
-// products sold moyenne price
-float moyenne_products_price = 0;
-// increment everytime a product is sold
 
 // menu
 void main_menu();
@@ -52,7 +48,9 @@ Produit alimenter_stock();
 // supprimer le produit
 Produit supreimer_produit();
 // Statistique de vente
-void statistique_vent();
+Produit statistique_vent();
+// find max price
+int max_price();
 
 int main()
 {
@@ -66,18 +64,19 @@ int main()
 
 void main_menu()
 {
+    
     Produit *produits;
-    Produit *produits_sold;
+    float produits_solde[achate];
     int choice;
     int taille;
     int list_method;
     printf("\t=====================================================\n");
     printf("\t\t\tGestion de Pharmacie");
-    printf("\n\t_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_\n");
+    printf("\n\t_____________________________________________________\n");
     printf("\n\t=====================================================\n");
     do
-    {
-        printf("\n\t___________________Menu Principal__________________\n\n");
+    { 
+        printf("\n\t_____________________Menu Principal________________\n\n");
         printf("\t1 + Ajouter un nouveau produit ou plusieurs produits\n");
         printf("\t2 + Lister tous les produits\n");
         printf("\t3 + Acheter produit\n");
@@ -110,7 +109,7 @@ void main_menu()
             break;
         case 3:
             printf("\n\tAcheter produit");
-            achete_produit(&produits);
+            achete_produit(&produits, &produits_solde[achate]);
             break;
         case 4:
             printf("\n\tRechercher les produits");
@@ -130,7 +129,7 @@ void main_menu()
             break;
         case 8:
             printf("\n\tStatistique de vente");
-            statistique_vent();
+            statistique_vent(&produits_solde[achate]);
             break;
         case 0:
             printf("\n\tExited");
@@ -153,12 +152,14 @@ Produit ajoute_produit(Produit produits[], int taille)
         scanf("%d", &produits[n].code);
         printf("\n\tEntrer le nom du produit: ");
         scanf("%s", produits[n].nom);
+        // fflush(stdin);
+        // gets(produits[n].nom);
         printf("\n\tEntrer la quantite du produit: ");
         scanf("%d", &produits[n].quantite);
         printf("\n\tEntrer le prix du produit: ");
         scanf("%f", &produits[n].prix);
         produits[n].prix_TTC = produits[n].prix + ((produits[n].prix * 15) / 100);
-        printf("\n\t_____________________________________\n");
+        printf("\n\t___________________________\n");
         n++;
     }
     return produits[taille];
@@ -204,24 +205,17 @@ void affichage_produit(Produit produits[])
 {
     // printf("How many products you want to see: ");
     // scanf("%d", &taille);
-    // for (int i = 0; i < n; i++)
-    // {
-    //     printf("\n\tProdiut n%d:\n", i+1);
-    //     printf("\n\tle code du produit: %d", produits[pos].code);
-    //     printf("\n\tle nom du produit: %s", produits[pos].nom);
-    //     printf("\n\tla quantite du produit: %d", produits[pos].quantite);
-    //     printf("\n\tle prix du produit: %.2f MAD", produits[pos].prix);
-    //     printf("\n\tle prixTTC du produit: %.2f MAD", produits[pos].prix_TTC);
-    //     printf("\n\t_____________________________________\n");
-    // }
-    printf("\n\t___________________________________________________\n");
-    printf("\t%.10s %.10s %.10s %.10s %.10s","Code","Nom","Quantite","Prix","PrixTTC");
-    printf("\n\t___________________________________________________\n");
     for (int i = 0; i < n; i++)
     {
-        printf("\t%d %s %d %.2f MAD %.2f MAD", produits[pos].code, produits[pos].nom, produits[pos].quantite, produits[pos].prix, produits[pos].prix_TTC);
-        printf("\n");
+        printf("\n\tProdiut n%d:\n", i+1);
+        printf("\n\tle code du produit: %d", produits[i].code);
+        printf("\n\tle nom du produit: %s", produits[i].nom);
+        printf("\n\tla quantite du produit: %d", produits[i].quantite);
+        printf("\n\tle prix du produit: %.2f MAD", produits[i].prix);
+        printf("\n\tle prixTTC du produit: %.2f MAD", produits[i].prix_TTC);
+        printf("\n\t________________________________\n");
     }
+    
 }
 
 
@@ -255,7 +249,7 @@ Produit search_produit(Produit produits[])
 }
 
 // achete produit
-Produit achete_produit(Produit produits[])
+Produit achete_produit(Produit produits[], float produits_solde[])
 {
     int packs;
     search_produit(produits);
@@ -269,16 +263,16 @@ Produit achete_produit(Produit produits[])
             scanf("%d %d %d", &produits[pos].date.jj, &produits[pos].date.mm, &produits[pos].date.aa);
             produits[pos].quantite = produits[pos].quantite - packs;
             printf("\n\tle produit %s vendu avec succes", produits[pos].nom);
-            total_products_price += (produits[pos].prix * packs);
+            produits_solde[achate] += produits[pos].prix;
+            achate++;
         }else
         {
             printf("\n\tle produit %s hors-stock", produits[pos].nom);
         }
     }else
     {
-        printf("\n\taucun produit disponible avec ce code");
+        printf("\n\tle produit n-existe pas");
     }
-    moyenne_products_price += (total_products_price / packs);
 }
 
 // etat de stock
@@ -294,12 +288,8 @@ void etat_stock(Produit produits[])
             printf("\n\tla quantite du produit: %d", produits[i].quantite);
             printf("\n\tle prix du produit: %.2f MAD", produits[i].prix);
             printf("\n\tle prixTTC du produit: %.2f MAD", produits[i].prix_TTC);
-            printf("\n\t_____________________________________\n");
-        }else
-        {
-            printf("\n\t");
+            printf("\n\t________________________________\n");
         }
-        
     }
 }
 
@@ -325,38 +315,56 @@ Produit supreimer_produit(Produit produits[])
 {
     search_produit(produits);
     int i;
-    for(i=pos; i<n-1; i++)
+    int confirm;
+    printf("\n\tvous souhaitez supprimer ce produit [oui = 1][no = 0]: ");
+    scanf("%d", &confirm);
+    if(confirm == 1)
     {
-        produits[i] = produits[i + 1];
+        for(i=pos; i<n-1; i++)
+        {
+            produits[i] = produits[i + 1];
+        }
+        //Decrement array size by 1 
+        n--;
+        printf("\n\tle produit a ete supprime avec succes");
     }
-    //Decrement array size by 1 
-    n--;
-    printf("\n\tle produit a ete supprime avec succes");
 }
 
-// Statistique de vente
-void statistique_vent()
+// // Statistique de vente
+Produit statistique_vent(float produits_solde[achate])
 {
-    int static_choix;
-    printf("\n\t1 => Afficher le total des prix des produits");
-    printf("\n\t2 => Afficher la moyenne des prix des produits");
-    printf("\n\t3 => Afficher le Max des prix des produits");
-    printf("\n\t4 => Afficher le Min des prix des produits");
-    printf("\n\t> ");
-    scanf("%d", &static_choix);
-    switch(static_choix)
+    int choice;
+    printf("\n\t1 => Afficher le total des prix des produits vendus en journée courante");
+    printf("\n\t2 => Afficher la moyenne des prix des produits vendus en journée courante");
+    printf("\n\t3 => Afficher le Max des prix des produits vendus en journée courante");
+    printf("\n\t4 => Afficher le Min des prix des produits vendus en journée courante");
+    printf("\n\t  => taper n’importe quel bouton pour continuer...");
+    printf("\n\t  > ");
+    scanf("%d", &choice);
+    switch(choice)
     {
         case 1:
-            printf("\n\tle total des prix des produits vendus en journee courante: %.2f MAD", total_products_price);
             break;
         case 2:
-            printf("\n\tle moyenne des prix des produits vendus en journee courante: %.2f MAD", moyenne_products_price);
             break;
         case 3:
-            printf("\n\tle max des prix des produits vendus en journee courante: 0 MAD");
+            max_price(&produits_solde[achate]);
             break;
         case 4:
-            printf("\n\tle min des prix des produits vendus en journee courante: 0 MAD");
+            break;
+        default:
             break;
     }
+}
+int max_price(float produits_solde[achate])
+{
+    int i;
+    for (i = 1; i < achate; i++)
+    {
+        if(produits_solde[0] < produits_solde[i])
+        {
+            produits_solde[0] = produits_solde[i];
+        }
+    }
+    printf("\n\tle Max des prix des produits vendus en journee courante: %.2f", produits_solde[0]);
 }
