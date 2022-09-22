@@ -1,11 +1,11 @@
-#Projet Fin SAS
-#Gestion de Pharmacie
-##Introduction : 
+# Projet Fin SAS
+# Gestion de Pharmacie
+## Introduction : 
 
-l’application de gestion de pharmacie  est une application console. Qui a pour but de gérer les produits pharmaceutiques (ajouter, rechercher, supprimer et afficher un produit …)
+    l’application de gestion de pharmacie  est une application console. Qui a pour but de gérer les produits pharmaceutiques (ajouter, rechercher, supprimer et afficher un produit …)
 
-###Contexte du projet :
-L’application doit avoir un menu qui vous permet de :
+### Contexte du projet :
+    L’application doit avoir un menu qui vous permet de :
 
 
 - Ajouter un nouveau produit: un produit est identifié par : son code, son nom, sa quantité, et son prix.
