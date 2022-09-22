@@ -66,7 +66,7 @@ void main_menu()
 {
     
     Produit *produits;
-    float produits_solde[achate];
+    Produit *produits_solde;
     int choice;
     int taille;
     int list_method;
@@ -109,7 +109,7 @@ void main_menu()
             break;
         case 3:
             printf("\n\tAcheter produit");
-            achete_produit(&produits, &produits_solde[achate]);
+            achete_produit(&produits, &produits_solde);
             break;
         case 4:
             printf("\n\tRechercher les produits");
@@ -129,7 +129,7 @@ void main_menu()
             break;
         case 8:
             printf("\n\tStatistique de vente");
-            statistique_vent(&produits_solde[achate]);
+            statistique_vent(&produits_solde);
             break;
         case 0:
             printf("\n\tExited");
@@ -188,7 +188,7 @@ Produit lister_produits_p(Produit produits[])
     Produit temp;
     for(int i=0; i < n; i++)
     {
-        for(int j = 0; j < n; j++)
+        for(int j = 0; j < n-1; j++)
         {
             if(produits[i].prix > produits[j].prix)
             {
@@ -249,7 +249,7 @@ Produit search_produit(Produit produits[])
 }
 
 // achete produit
-Produit achete_produit(Produit produits[], float produits_solde[])
+Produit achete_produit(Produit produits[], Produit produits_solde[])
 {
     int packs;
     search_produit(produits);
@@ -263,7 +263,12 @@ Produit achete_produit(Produit produits[], float produits_solde[])
             scanf("%d %d %d", &produits[pos].date.jj, &produits[pos].date.mm, &produits[pos].date.aa);
             produits[pos].quantite = produits[pos].quantite - packs;
             printf("\n\tle produit %s vendu avec succes", produits[pos].nom);
-            produits_solde[achate] += produits[pos].prix;
+            // produits_solde[achate].code = produits[pos].code;
+            // strcpy(produits_solde[achate].nom,produits[pos].nom);
+            // produits_solde[achate].quantite = packs;
+            // produits_solde[achate].prix = produits[pos].prix;
+            // produits_solde[achate].prix_TTC = produits[pos].prix_TTC;
+            // produits_solde[achate].date = produits[pos].date;
             achate++;
         }else
         {
@@ -331,7 +336,7 @@ Produit supreimer_produit(Produit produits[])
 }
 
 // // Statistique de vente
-Produit statistique_vent(float produits_solde[achate])
+Produit statistique_vent(Produit produits_solde[])
 {
     int choice;
     printf("\n\t1 => Afficher le total des prix des produits vendus en journée courante");
@@ -348,7 +353,7 @@ Produit statistique_vent(float produits_solde[achate])
         case 2:
             break;
         case 3:
-            max_price(&produits_solde[achate]);
+            // max_price(&produits_solde);
             break;
         case 4:
             break;
@@ -356,15 +361,15 @@ Produit statistique_vent(float produits_solde[achate])
             break;
     }
 }
-int max_price(float produits_solde[achate])
-{
-    int i;
-    for (i = 1; i < achate; i++)
-    {
-        if(produits_solde[0] < produits_solde[i])
-        {
-            produits_solde[0] = produits_solde[i];
-        }
-    }
-    printf("\n\tle Max des prix des produits vendus en journee courante: %.2f", produits_solde[0]);
-}
+// int max_price(Produit produits_solde[])
+// {
+//     int i;
+//     for (i = 1; i < achate; i++)
+//     {
+//         if(&produits_solde[0].prix_TTC < &produits_solde[i].prix_TTC)
+//         {
+//             &produits_solde[0] = &produits_solde[i];
+//         }
+//     }
+//     printf("\n\tle Max des prix des produits vendus en journee courante: %.2f", produits_solde[0]);
+// }
