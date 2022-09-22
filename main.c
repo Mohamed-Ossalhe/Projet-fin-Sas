@@ -27,6 +27,9 @@ int achate = 0;
 // check if found and store the product index in pos var
 int found = 0, pos;
 
+// total prices of sold products
+float total_prices = 0;
+
 // menu
 void main_menu();
 // ajoute
@@ -263,6 +266,7 @@ Produit achete_produit(Produit produits[], Produit produits_solde[])
             scanf("%d %d %d", &produits[pos].date.jj, &produits[pos].date.mm, &produits[pos].date.aa);
             produits[pos].quantite = produits[pos].quantite - packs;
             printf("\n\tle produit %s vendu avec succes", produits[pos].nom);
+            total_prices += produits[pos].prix * packs;
             // produits_solde[achate].code = produits[pos].code;
             // strcpy(produits_solde[achate].nom,produits[pos].nom);
             // produits_solde[achate].quantite = packs;
@@ -349,6 +353,7 @@ Produit statistique_vent(Produit produits_solde[])
     switch(choice)
     {
         case 1:
+            printf("\n\tle total des prix des produits vendus en journée courante: %.2f", total_prices);
             break;
         case 2:
             break;
